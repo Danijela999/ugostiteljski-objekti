@@ -9,6 +9,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { AppRedisService } from "src/biz/redis/redis.service";
 import BizExternalUserService from "src/bizServices/appUser/bizExternalUser.service";
 import AppUserServiceApiG from "../appUser/apiGee/appUser.apiGee.service";
+import MailClient from "src/biz/api/mail/mail.client";
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import AppUserServiceApiG from "../appUser/apiGee/appUser.apiGee.service";
     BizExternalUserService,
     UserService,
     UserDB,
+    MailClient,
     MySQLConfig,
   ],
   controllers: [UserController],

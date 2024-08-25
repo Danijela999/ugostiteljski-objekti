@@ -16,6 +16,7 @@ import { AppRedisService } from "src/biz/redis/redis.service";
 import * as bcrypt from "bcrypt";
 import LogoutDto from "./dto/logout.dto";
 import BizExternalUserService from "src/bizServices/appUser/bizExternalUser.service";
+import ForgotPasswordDto from "./dto/forgotPassword.dto";
 
 @Injectable()
 export default class UserService {
@@ -127,6 +128,20 @@ export default class UserService {
     }
     await this.userBizService.changePassword(changePasswordParams, apiCode);
     return new CommonResponse(null, 201, "Updated", null, true);
+  }
+
+  async forgotPassword(
+    forgotPasswordParams: ForgotPasswordDto,
+    apiCode: string
+  ): Promise<any> {
+    const { email } = forgotPasswordParams;
+    const user = await this.userBizService.getUserByEmail(email, apiCode);
+    if (user.length == 0) {
+      throw new CustomNotFoundExceptionApiG(apiCode, "User not found")
+        .exception;
+    }
+    await this.userBizService.forgotPassword(forgotPasswordParams, apiCode);
+    return new CommonResponse(null, 200, "OK", null, true);
   }
 
   async logout(logoutParams: LogoutDto, apiCode: string): Promise<any> {

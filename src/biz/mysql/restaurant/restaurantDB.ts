@@ -13,9 +13,17 @@ export default class RestaurantDB {
   constructor(private readonly mySqlConfig: MySQLConfig) {}
 
   async addRestaurant(addRestaurantParams: AddRestaurantDto): Promise<any> {
-    const { name, address } = addRestaurantParams;
+    const {
+      name,
+      description,
+      address,
+      latitude,
+      longitude,
+      startTime,
+      endTime,
+    } = addRestaurantParams;
 
-    const sql = `INSERT INTO restaurants (name, address) VALUES ("${name}", "${address}");`;
+    const sql = `INSERT INTO restaurants (name, description, address, latitude, longitude, start_time, end_time) VALUES ("${name}", "${description}", "${address}", ${latitude}, ${longitude},"${startTime}", "${endTime}");`;
     try {
       return await MySQLClient.runQuery(
         dbNamesEnum.DB,

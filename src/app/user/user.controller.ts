@@ -48,6 +48,8 @@ import { httpApiGeeCodes } from "src/http/apiGee/http.apiGeeCodes.enum";
 import { JoiValidationPipeApiG } from "src/pipes/apiGee/joiValidation.apiGee.pipe";
 import LogoutDto from "./dto/logout.dto";
 import logoutSchema from "./schema/logout.schema";
+import forgotPasswordSchema from "./schema/forgotPassword.schema";
+import ForgotPasswordDto from "./dto/forgotPassword.dto";
 
 const apiCode = httpApiGeeCodes["UserController"];
 @ApiTags("User")
@@ -132,6 +134,27 @@ export default class UserController {
     return await this.userService.changePassword(changePasswordParams, apiCode);
   }
   /** changePassword - END */
+
+  /** forgotPassword- START */
+  @Post("/forgot-password")
+  @ApiBadRequestResponse(commonBadRequest({ apiCode }))
+  @ApiInternalServerErrorResponse(commonInternalServerError({ apiCode }))
+  @ApiUnauthorizedResponse(commonNotAuthorized({ apiCode }))
+  @ApiForbiddenResponse(commonForbidden({ apiCode }))
+  @ApiNotFoundResponse(commonNotFound({ apiCode, message: "User Not Found" }))
+  @ApiOkResponse(
+    commonCreated({
+      description: "Successfully forgot password",
+    })
+  )
+  @UsePipes(new JoiValidationPipeApiG(forgotPasswordSchema, apiCode))
+  async forgotPassword(
+    @Body() forgotPasswordParams: ForgotPasswordDto,
+    @Res() _res: Response
+  ): Promise<any> {
+    return await this.userService.forgotPassword(forgotPasswordParams, apiCode);
+  }
+  /** forgotPassword - END */
 
   /** logout- START */
   @Delete("/logout")

@@ -4,13 +4,16 @@ import UserDB from "src/biz/mysql/user/userDB";
 import { CustomInternalServerErrorExceptionApiG } from "src/http/apiGee/http.apiGee.exception";
 import ChangePasswordDto from "src/app/user/dto/changePassword.dto";
 import { AppRedisService } from "src/biz/redis/redis.service";
-import { UserInRedis } from "src/biz/redis/dto/userRedis.dto";
+import ForgotPasswordDto from "src/app/user/dto/forgotPassword.dto";
+import MailClient from "src/biz/api/mail/mail.client";
+import MailBodyDto from "src/biz/api/mail/dto/mailBody.dto";
 
 @Injectable()
 export default class UserBizService {
   constructor(
     private readonly userDb: UserDB,
-    private readonly appRedisService: AppRedisService
+    private readonly appRedisService: AppRedisService,
+    private readonly mailClient: MailClient
   ) {}
 
   async createUser(
@@ -30,6 +33,23 @@ export default class UserBizService {
   ): Promise<any> {
     try {
       return await this.userDb.changePassword(changePasswordParams);
+    } catch (err) {
+      throw new CustomInternalServerErrorExceptionApiG(apiCode, err).exception;
+    }
+  }
+
+  async forgotPassword(
+    forgotPasswordParams: ForgotPasswordDto,
+    apiCode: string
+  ): Promise<any> {
+    try {
+      const { email } = forgotPasswordParams;
+      const mailParams: MailBodyDto = {
+        to: email,
+        subject: "Forgot password",
+        text: "Resetujete password",
+      };
+      return await this.mailClient.sendMail(mailParams, apiCode);
     } catch (err) {
       throw new CustomInternalServerErrorExceptionApiG(apiCode, err).exception;
     }
