@@ -3,6 +3,7 @@ import AddRestaurantDto from "src/app/restaurant/dto/addRestaurants.dto";
 import DeleteRestaurantDto from "src/app/restaurant/dto/deleteRestaurants.dto";
 import GetRestaurantByIdDto from "src/app/restaurant/dto/getRestaurantById.dto";
 import GetRestaurantByNameDto from "src/app/restaurant/dto/getRestaurantByName.dto";
+import GetRestaurantByCoordinatesDto from "src/app/restaurant/dto/getRestaurantsByCoordinates.dto";
 import UpdateAddressDto from "src/app/restaurant/dto/updateAddress.dto";
 import RestaurantDB from "src/biz/mysql/restaurant/restaurantDB";
 import { CustomInternalServerErrorExceptionApiG } from "src/http/apiGee/http.apiGee.exception";
@@ -36,6 +37,19 @@ export default class RestaurantBizService {
   ): Promise<any> {
     try {
       return await this.restaurantDB.getRestaurantById(getRestaurantByIdParams);
+    } catch (err) {
+      throw new CustomInternalServerErrorExceptionApiG(apiCode, err).exception;
+    }
+  }
+
+  async getRestaurantsByCoordinates(
+    restaurantsByCoordinatesParams: GetRestaurantByCoordinatesDto,
+    apiCode: string
+  ): Promise<any> {
+    try {
+      return await this.restaurantDB.getRestaurantByCoordinates(
+        restaurantsByCoordinatesParams
+      );
     } catch (err) {
       throw new CustomInternalServerErrorExceptionApiG(apiCode, err).exception;
     }

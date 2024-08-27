@@ -9,6 +9,7 @@ import {
   CustomBadRequestExceptionApiG,
   CustomNotFoundExceptionApiG,
 } from "src/http/apiGee/http.apiGee.exception";
+import GetRestaurantByCoordinatesDto from "./dto/getRestaurantsByCoordinates.dto";
 
 @Injectable()
 export default class RestaurantService {
@@ -43,6 +44,21 @@ export default class RestaurantService {
     const restaurants = await this.restaurantBizService.getRestaurants(apiCode);
     if (restaurants.length === 0) {
       throw new CustomNotFoundExceptionApiG(apiCode, "Restaurants not found")
+        .exception;
+    }
+    return new CommonResponse(null, 200, "OK", restaurants);
+  }
+
+  async getRestaurantsByCoordinates(
+    restaurantsByCoordinatesParams: GetRestaurantByCoordinatesDto,
+    apiCode: string
+  ): Promise<any> {
+    const restaurants = await this.restaurantBizService.getRestaurantsByCoordinates(
+      restaurantsByCoordinatesParams,
+      apiCode
+    );
+    if (restaurants.length === 0) {
+      throw new CustomNotFoundExceptionApiG(apiCode, "Restaurant not found")
         .exception;
     }
     return new CommonResponse(null, 200, "OK", restaurants);

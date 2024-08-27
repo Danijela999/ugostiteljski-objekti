@@ -53,6 +53,7 @@ import updateAddressSchema from "./schema/updateAddress.schema";
 import UpdateAddressDto from "./dto/updateAddress.dto";
 import { JoiValidationPipeApiG } from "src/pipes/apiGee/joiValidation.apiGee.pipe";
 import getRestaurantByIdSchema from "./schema/getRestaurantById.schema";
+import GetRestaurantByCoordinatesDto from "./dto/getRestaurantsByCoordinates.dto";
 
 const apiCode = httpApiGeeCodes["RestaurantController"];
 @ApiTags("Restaurants")
@@ -84,6 +85,32 @@ export default class RestaurantController {
     );
   }
   /** addRestaurants - END */
+
+  /** getRestaurantsByCoordinates- START */
+  @Get("/coordinates")
+  @ApiBadRequestResponse(commonBadRequest({ apiCode }))
+  @ApiInternalServerErrorResponse(commonInternalServerError({ apiCode }))
+  @ApiUnauthorizedResponse(commonNotAuthorized({ apiCode }))
+  @ApiForbiddenResponse(commonForbidden({ apiCode }))
+  @ApiNotFoundResponse(
+    commonNotFound({ apiCode, message: "Restaurants Not Found" })
+  )
+  @ApiOkResponse(
+    commonOK({
+      description: "Successfully retreived restaurants data",
+    })
+  )
+  @UseGuards(AuthGuardApiG)
+  async getRestaurantsByCoordinates(
+    @Query() restaurantByCoordinatesParams: GetRestaurantByCoordinatesDto,
+    @Res() _res: Response
+  ): Promise<any> {
+    return await this.restaurantService.getRestaurantsByCoordinates(
+      restaurantByCoordinatesParams,
+      apiCode
+    );
+  }
+  /** getRestaurantsByCoordinates - END */
 
   /** getRestaurants- START */
   @Get("/")
