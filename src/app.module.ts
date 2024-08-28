@@ -19,6 +19,7 @@ import { AppConfigModule } from "./config/configuration.module";
 import { AppConfigService } from "./config/configuration.service";
 import { LoggerInterceptor } from "./interceptors/logger.interceptor";
 import { ReservationModule } from "./app/reservation/reservation.module";
+import { AwsModule } from "./app/aws/aws.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ReservationModule } from "./app/reservation/reservation.module";
     ReservationModule,
     TableModule,
     UserModule,
+    AwsModule,
     RedisModule.forRootAsync({
       imports: [AppConfigModule],
       inject: [AppConfigService],

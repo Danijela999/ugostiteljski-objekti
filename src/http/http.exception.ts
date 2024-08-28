@@ -41,7 +41,7 @@ export class CommonException {
     }
   }
 
-  createCustomException() {
+  createCustomException() {//bespotrebno napravljena?
     switch (this.code) {
       case HttpStatus.FORBIDDEN:
         return new ForbiddenException(this);

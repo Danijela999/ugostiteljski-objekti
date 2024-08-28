@@ -37,6 +37,7 @@
     "@types/oracledb": "^4.2.0",
     "@types/uuid": "^8.0.0",
     "async-redis": "^1.1.7",
+    "aws-sdk": "^2.1683.0",
     "bcrypt": "^5.1.1",
     "connect-redis": "^4.0.3",
     "elastic-apm-node": "^3.6.1",
