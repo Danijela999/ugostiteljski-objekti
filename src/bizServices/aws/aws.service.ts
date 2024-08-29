@@ -11,7 +11,9 @@ export default class AwsBizService {
     apiCode: string
   ): Promise<any> {
     try {
-      return await this.awsClient.addImages(file, bucket);
+      const ress=await this.awsClient.addImages(file, bucket);
+      console.log('RESSSSSSSSSSSS'||ress||'RESSSSSSSS');
+      return ress;
     } catch (err) {
       throw new CustomInternalServerErrorExceptionApiG(apiCode, err).exception;
     }

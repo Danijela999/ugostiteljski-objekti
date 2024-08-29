@@ -7,6 +7,8 @@ import { AppRedisService } from "src/biz/redis/redis.service";
 import ForgotPasswordDto from "src/app/user/dto/forgotPassword.dto";
 import MailClient from "src/biz/api/mail/mail.client";
 import MailBodyDto from "src/biz/api/mail/dto/mailBody.dto";
+import ChangeProfilePhotoDto from "src/app/user/dto/changeProfilePhoto.dto";
+import GetUserByEmailDto from "src/app/user/dto/getUserByEmail.dto";
 
 @Injectable()
 export default class UserBizService {
@@ -58,6 +60,16 @@ export default class UserBizService {
   async getUserByEmail(email: string, apiCode: string): Promise<any> {
     try {
       return await this.userDb.getUserByEmail(email);
+    } catch (err) {
+      throw new CustomInternalServerErrorExceptionApiG(apiCode, err).exception;
+    }
+  }
+  async changeProfilePhoto(
+    changePhotoParams: ChangeProfilePhotoDto,
+    apiCode: string
+  ): Promise<any> {
+    try {
+      return await this.userDb.changeProfilePhoto(changePhotoParams);
     } catch (err) {
       throw new CustomInternalServerErrorExceptionApiG(apiCode, err).exception;
     }

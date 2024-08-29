@@ -22,6 +22,8 @@ import {
   Patch,
   UseGuards,
   Delete,
+  Param,
+  Get,
 } from "@nestjs/common";
 
 import { Response } from "express";
@@ -32,6 +34,7 @@ import {
   commonInternalServerError,
   commonNotAuthorized,
   commonNotFound,
+  commonOK,
 } from "../../swagger/apiDocumentationCommonResponse";
 import CreateUserDto from "./dto/createUser.dto";
 import UserService from "./user.service";
@@ -50,6 +53,10 @@ import LogoutDto from "./dto/logout.dto";
 import logoutSchema from "./schema/logout.schema";
 import forgotPasswordSchema from "./schema/forgotPassword.schema";
 import ForgotPasswordDto from "./dto/forgotPassword.dto";
+import changeProfilePhotoSchema from "./schema/changeProfilePhoto.schema";
+import ChangeProfilePhotoDto from "./dto/changeProfilePhoto.dto";
+import getUserByEmailSchema from "./schema/getUserByEmail.schema";
+import GetUserByEmailDto from "./dto/getUserByEmail.dto";
 
 const apiCode = httpApiGeeCodes["UserController"];
 @ApiTags("User")
@@ -177,4 +184,50 @@ export default class UserController {
     return await this.userService.logout(logoutParams, apiCode);
   }
   /** logout - END */
+   /** changePhoto- START */
+   @Patch("/change-profile-photo")
+   @ApiBadRequestResponse(commonBadRequest({ apiCode }))
+   @ApiInternalServerErrorResponse(commonInternalServerError({ apiCode }))
+   @ApiUnauthorizedResponse(commonNotAuthorized({ apiCode }))
+   @ApiForbiddenResponse(commonForbidden({ apiCode }))
+   @ApiNotFoundResponse(commonNotFound({ apiCode, message: "User Not Found" }))
+   @ApiOkResponse(
+     commonCreated({
+       description: "Successfully changed profile photo",
+     })
+   )
+   @UseGuards(AuthGuardApiG)
+   @UsePipes(new JoiValidationPipeApiG(changeProfilePhotoSchema, apiCode))
+   async changeProfilePhoto(
+     @Body() changePhotoParams: ChangeProfilePhotoDto,
+     @Res() _res: Response
+   ): Promise<any> {
+     return await this.userService.changeProfilePhoto(changePhotoParams, apiCode);
+   }
+   /** changePhoto - END */
+
+   /** getUserByEmail- START */
+  @Get("/:email")
+  @ApiBadRequestResponse(commonBadRequest({ apiCode }))
+  @ApiInternalServerErrorResponse(commonInternalServerError({ apiCode }))
+  @ApiUnauthorizedResponse(commonNotAuthorized({ apiCode }))
+  @ApiForbiddenResponse(commonForbidden({ apiCode }))
+  @ApiNotFoundResponse(
+    commonNotFound({ apiCode, message: "User not found" })
+  )
+  @ApiOkResponse(
+    commonOK({
+      description: "Successfully retreived user data",
+    })
+  )
+  @UseGuards(AuthGuardApiG)
+  @UsePipes(new JoiValidationPipeApiG(getUserByEmailSchema, apiCode))
+  async getRestaurantById(
+    @Param() email: GetUserByEmailDto,
+    @Res() _res: Response
+  ): Promise<any> {
+    console.log("Emailll", email);
+    return await this.userService.getUserByEmail(email.email, apiCode);
+  }
+  /**  getUserByEmail - END */
 }

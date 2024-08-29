@@ -17,6 +17,7 @@ import * as bcrypt from "bcrypt";
 import LogoutDto from "./dto/logout.dto";
 import BizExternalUserService from "src/bizServices/appUser/bizExternalUser.service";
 import ForgotPasswordDto from "./dto/forgotPassword.dto";
+import ChangeProfilePhotoDto from "./dto/changeProfilePhoto.dto";
 
 @Injectable()
 export default class UserService {
@@ -168,5 +169,29 @@ export default class UserService {
       apiCode
     );
     return new CommonResponse(null, 204, "Deleted", null, true);
+  }
+  async changeProfilePhoto(
+    changePhotoParams: ChangeProfilePhotoDto,
+    apiCode: string
+  ): Promise<any> {
+    const { email } = changePhotoParams;
+    const user = await this.userBizService.getUserByEmail(email, apiCode);
+    if (user.length == 0) {
+      throw new CustomNotFoundExceptionApiG(apiCode, "User not found")
+        .exception;
+    }
+    await this.userBizService.changeProfilePhoto(changePhotoParams, apiCode);
+    return new CommonResponse(null, 201, "Updated", null, true);
+  }
+  async getUserByEmail(
+    email: string,
+    apiCode: string
+  ): Promise<any> {
+    const user = await this.userBizService.getUserByEmail(email, apiCode);
+    if (user.length == 0) {
+      throw new CustomNotFoundExceptionApiG(apiCode, "User not found")
+        .exception;
+    }
+    return new CommonResponse(null, 200, "OK", user);
   }
 }

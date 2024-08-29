@@ -5,6 +5,8 @@ import MySQLClient from "../clients/mysql.client";
 import { dbNamesEnum } from "../constants/dbNames.enum";
 import * as bcrypt from "bcrypt";
 import ChangePasswordDto from "src/app/user/dto/changePassword.dto";
+import ChangeProfilePhotoDto from "src/app/user/dto/changeProfilePhoto.dto";
+import GetUserByEmailDto from "src/app/user/dto/getUserByEmail.dto";
 
 @Injectable()
 export default class UserDB {
@@ -44,6 +46,19 @@ export default class UserDB {
     const saltOrRounds = 10;
     const hash = await bcrypt.hash(password, saltOrRounds);
     const sql = `UPDATE users set password = "${hash}" where email = "${email}";`;
+    try {
+      return await MySQLClient.runQuery(
+        dbNamesEnum.DB,
+        sql,
+        this.mySqlConfig.config[dbNamesEnum.DB]
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+  async changeProfilePhoto(changePhotoParams: ChangeProfilePhotoDto): Promise<any> {
+    const { photoUrl, email } = changePhotoParams;
+    const sql = `UPDATE users set img_url = "${photoUrl}" where email = "${email}";`;
     try {
       return await MySQLClient.runQuery(
         dbNamesEnum.DB,
