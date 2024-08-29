@@ -58,6 +58,7 @@ export default class UserService {
           email: user[0].email,
           firstName: user[0].first_name,
           lastName: user[0].last_name,
+          privilegeId: user[0].id_privilegije,
           timeExpire,
         };
 
@@ -65,6 +66,7 @@ export default class UserService {
           email: user[0].email,
           firstName: user[0].first_name,
           lastName: user[0].last_name,
+          privilegeId: user[0].id_privilegije,
           timeExpire: timeExpireRefresh,
         };
         const accessToken = this.jwtService.sign(payload, {
@@ -122,6 +124,8 @@ export default class UserService {
     apiCode: string
   ): Promise<any> {
     const { email } = changePasswordParams;
+    console.log("CHANGE PASSWORD");
+    console.log(email);
     const user = await this.userBizService.getUserByEmail(email, apiCode);
     if (user.length == 0) {
       throw new CustomNotFoundExceptionApiG(apiCode, "User not found")
@@ -183,10 +187,7 @@ export default class UserService {
     await this.userBizService.changeProfilePhoto(changePhotoParams, apiCode);
     return new CommonResponse(null, 201, "Updated", null, true);
   }
-  async getUserByEmail(
-    email: string,
-    apiCode: string
-  ): Promise<any> {
+  async getUserByEmail(email: string, apiCode: string): Promise<any> {
     const user = await this.userBizService.getUserByEmail(email, apiCode);
     if (user.length == 0) {
       throw new CustomNotFoundExceptionApiG(apiCode, "User not found")

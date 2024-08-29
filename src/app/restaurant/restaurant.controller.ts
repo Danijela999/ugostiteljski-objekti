@@ -54,6 +54,8 @@ import UpdateAddressDto from "./dto/updateAddress.dto";
 import { JoiValidationPipeApiG } from "src/pipes/apiGee/joiValidation.apiGee.pipe";
 import getRestaurantByIdSchema from "./schema/getRestaurantById.schema";
 import GetRestaurantByCoordinatesDto from "./dto/getRestaurantsByCoordinates.dto";
+import GetRestaurantByNameDto from "./dto/getRestaurantByName.dto";
+import getRestaurantByCoordinatesSchema from "./schema/getRestaurantsByCoordinates.schema";
 
 const apiCode = httpApiGeeCodes["RestaurantController"];
 @ApiTags("Restaurants")
@@ -101,12 +103,41 @@ export default class RestaurantController {
     })
   )
   @UseGuards(AuthGuardApiG)
+  @UsePipes(
+    new JoiValidationPipeApiG(getRestaurantByCoordinatesSchema, apiCode)
+  )
   async getRestaurantsByCoordinates(
     @Query() restaurantByCoordinatesParams: GetRestaurantByCoordinatesDto,
     @Res() _res: Response
   ): Promise<any> {
     return await this.restaurantService.getRestaurantsByCoordinates(
       restaurantByCoordinatesParams,
+      apiCode
+    );
+  }
+  /** getRestaurantsByCoordinates - END */
+
+  /** getRestaurantsByCoordinates- START */
+  @Get("/name")
+  @ApiBadRequestResponse(commonBadRequest({ apiCode }))
+  @ApiInternalServerErrorResponse(commonInternalServerError({ apiCode }))
+  @ApiUnauthorizedResponse(commonNotAuthorized({ apiCode }))
+  @ApiForbiddenResponse(commonForbidden({ apiCode }))
+  @ApiNotFoundResponse(
+    commonNotFound({ apiCode, message: "Restaurants Not Found" })
+  )
+  @ApiOkResponse(
+    commonOK({
+      description: "Successfully retreived restaurants data",
+    })
+  )
+  @UseGuards(AuthGuardApiG)
+  async getRestaurantsByName(
+    @Query() restaurantByNameParams: GetRestaurantByNameDto,
+    @Res() _res: Response
+  ): Promise<any> {
+    return await this.restaurantService.getRestaurantsByName(
+      restaurantByNameParams,
       apiCode
     );
   }

@@ -105,6 +105,21 @@ export default class RestaurantDB {
     }
   }
 
+  async getRestaurantByName(
+    getRestaurantByNameParams: GetRestaurantByNameDto
+  ): Promise<any> {
+    const { name } = getRestaurantByNameParams;
+    try {
+      return await MySQLClient.runQuery(
+        dbNamesEnum.DB,
+        `select id, name, address, description, start_time as startTime, end_time as endTime from restaurants where upper(name) like upper("%${name}%");`,
+        this.mySqlConfig.config[dbNamesEnum.DB]
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async deleteRestaurant(
     deleteRestaurantParams: DeleteRestaurantDto
   ): Promise<any> {

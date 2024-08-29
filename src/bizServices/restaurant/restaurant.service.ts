@@ -68,6 +68,19 @@ export default class RestaurantBizService {
     }
   }
 
+  async getRestaurantByName(
+    getRestaurantByNameParams: GetRestaurantByNameDto,
+    apiCode: string
+  ): Promise<any> {
+    try {
+      return await this.restaurantDB.getRestaurantByName(
+        getRestaurantByNameParams
+      );
+    } catch (err) {
+      throw new CustomInternalServerErrorExceptionApiG(apiCode, err).exception;
+    }
+  }
+
   async deleteRestaurant(
     deleteRestaurantParams: DeleteRestaurantDto,
     apiCode: string

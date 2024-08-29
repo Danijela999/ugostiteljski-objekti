@@ -20,12 +20,16 @@ import { AppConfigService } from "./config/configuration.service";
 import { LoggerInterceptor } from "./interceptors/logger.interceptor";
 import { ReservationModule } from "./app/reservation/reservation.module";
 import { AwsModule } from "./app/aws/aws.module";
+import { CategoryModule } from "./app/category/category.module";
+import { PositionModule } from "./app/position/position.module";
 
 @Module({
   imports: [
     AppConfigModule,
+    CategoryModule,
     RestaurantModule,
     ReservationModule,
+    PositionModule,
     TableModule,
     UserModule,
     AwsModule,
@@ -43,10 +47,6 @@ import { AwsModule } from "./app/aws/aws.module";
     MySQLBuilder,
     MySQLConfig,
     {
-      /**
-       * so nest will by itself inject AppUserService in LoggerInterceptor
-       * LoggerInterceptor with this configuration is global interceptor
-       */
       provide: APP_INTERCEPTOR,
       scope: Scope.REQUEST,
       useClass: LoggerInterceptor,

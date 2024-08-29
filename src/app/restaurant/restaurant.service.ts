@@ -10,6 +10,7 @@ import {
   CustomNotFoundExceptionApiG,
 } from "src/http/apiGee/http.apiGee.exception";
 import GetRestaurantByCoordinatesDto from "./dto/getRestaurantsByCoordinates.dto";
+import GetRestaurantByNameDto from "./dto/getRestaurantByName.dto";
 
 @Injectable()
 export default class RestaurantService {
@@ -55,6 +56,21 @@ export default class RestaurantService {
   ): Promise<any> {
     const restaurants = await this.restaurantBizService.getRestaurantsByCoordinates(
       restaurantsByCoordinatesParams,
+      apiCode
+    );
+    if (restaurants.length === 0) {
+      throw new CustomNotFoundExceptionApiG(apiCode, "Restaurant not found")
+        .exception;
+    }
+    return new CommonResponse(null, 200, "OK", restaurants);
+  }
+
+  async getRestaurantsByName(
+    restaurantsByNameParams: GetRestaurantByNameDto,
+    apiCode: string
+  ): Promise<any> {
+    const restaurants = await this.restaurantBizService.getRestaurantByName(
+      restaurantsByNameParams,
       apiCode
     );
     if (restaurants.length === 0) {
